@@ -1,11 +1,7 @@
-import PropTypes from "prop-types";
-import React, { Component } from "react";
-import NewsItem from "./NewsItem";
-// The Javascript map() method in JavaScript creates an array by calling a specific function on each element present in the parent array
-//Looping through an array in JSX to display NewsItems from state
-// Now this news will become old after some time so we are not going to do read news by this way we are going to use fetch API to fetch latest news.
-export class News extends Component {
-  articles = [
+{
+  "status": "ok",
+  "totalResults": 38,
+  "articles": [
     {
       "source": {
         "id": null,
@@ -266,36 +262,5 @@ export class News extends Component {
       "publishedAt": "2023-07-30T11:38:49Z",
       "content": null
     }
-  
   ]
-  
-  // every time a newsitem is made inside the news.js this constructor calls.
-  constructor(){
-    super();// without this webpage will show you an error.
-    console.log("Hello i am a constructor");
-    // this below is the state in the class.
-    this.state = {
-       articles : this.articles,
-       loading : false
-    }
-  }
-  // {this.state.articles.map((ele) => {console.log(ele)})}  this is the way in which you can get all the object from an array so each element is an object.
-  render() {
-    return (
-      <div className="container my-3">
-        <h2  style={{color : 'darkgreen'}}>NewsTiger - Top Headlines</h2>
-        <div className="row">
-          {this.state.articles.map( (ele)=>
-          {
-            return <div className="col-md-4 my-3" key = {ele.url}> {/* col-md-4 means medium devices mai ye 4 column lega maximum a key should be return as unique id */}
-            <NewsItem title={ele.title.slice(0,30)} description={ele.description.slice(0,80)} urlToImage = {ele.urlToImage} newsUrl = {ele.url}/>
-           </div>
-          })}
-          
-        </div>
-      </div>
-    );
-  }
 }
-
-export default News;

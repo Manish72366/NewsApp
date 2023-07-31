@@ -1,28 +1,7 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import NewsItem from "./NewsItem";
-// The Javascript map() method in JavaScript creates an array by calling a specific function on each element present in the parent array
-//Looping through an array in JSX to display NewsItems from state
-// Now this news will become old after some time so we are not going to do read news by this way we are going to use fetch API to fetch latest news.
 export class News extends Component {
-  // this articles i am not using as it will give user old data so just for reference how i started and then switch to FETCH API.
-  articles = [
-    // {
-    //   "source": {
-    //     "id": null,
-    //     "name": "Hollywood Reporter"
-    //   },
-    //   "author": "Pamela McClintock",
-    //   "title": "Box Office: ‘Haunted Mansion’ Spooked, ‘Barbie’ Scores Record $93M Second Weekend - Hollywood Reporter",
-    //   "description": "'Haunted Mansion' has started off with a lackluster $24.2 million in another summer bummer for Disney. Elsewhere, 'Oppenheimer' earned a stellar $46.2 million in its sophomore outing.",
-    //   "url": "https://www.hollywoodreporter.com/movies/movie-news/haunted-mansion-box-office-opening-haunted-mansion-1235547428/",
-    //   "urlToImage": "https://www.hollywoodreporter.com/wp-content/uploads/2023/07/Haunted-Mansion-Barbie-and-Oppenheimer-Split-H-2023.jpg?w=1024",
-    //   "publishedAt": "2023-07-30T16:30:00Z",
-    //   "content": "Barbie really is a pink unicorn. \r\nThe movie earned an estimated $93 million in its sophomore outing at the North American box office — one of the best second weekends of all time and the best second… [+5745 chars]"
-    // }
-  ]
-  
-  // every time a newsitem is made inside the news.js this constructor calls.
   constructor(){
     super();// without this webpage will show you an error.
     console.log("Hello i am a constructor");
@@ -30,7 +9,8 @@ export class News extends Component {
     this.state = {
       //  articles : this.articles, // as we are using fetch API
       articles : [],
-       loading : false
+      loading : false,
+      page : 1
     }
   }
   // componentDidMount helps us to fetch updated data.
@@ -44,11 +24,40 @@ export class News extends Component {
     console.log(parsedData);
     this.setState (
       {
-        articles : parsedData.articles // parsedData is similiar to sampleOutput.json and there articles key we need becz it has array of objects
+        articles : parsedData.articles, // parsedData is similiar to sampleOutput.json and there articles key we need becz it has array of objects
+        totalResults : parsedData.totalResults
       }
     )
   }
-  // {this.state.articles.map((ele) => {console.log(ele)})}  this is the way in which you can get all the object from an array so each element is an object.
+  handleNextClick = async () =>
+  {
+      let url = `https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=5f3863ab0e294d3a89c3097826ba64bb&page=${this.state.page + 1}&pageSize=20`;
+      let data = await fetch(url);
+      let parsedData = await data.json();
+      console.log(parsedData);
+      this.setState (
+        {
+          page : this.state.page + 1,
+          articles : parsedData.articles
+        }
+      )
+  }
+  handlePreviousClick = async () =>
+  {
+    // &page = number se wo number ka page dikhega and pageSize tells you that how many news in a single page will be shown
+    let url = `https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=5f3863ab0e294d3a89c3097826ba64bb&page=${this.state.page - 1}&pageSize=20`;
+    let data = await fetch(url);
+    let parsedData = await data.json();
+    console.log(parsedData);
+    this.setState (
+      {
+        page : this.state.page - 1,
+        articles : parsedData.articles
+      }
+    )
+  }
+    
+    // {this.state.articles.map((ele) => {console.log(ele)})}  this is the way in which you can get all the object from an array so each element is an object.
   render() {
     console.log("render");
     return (
@@ -62,8 +71,12 @@ export class News extends Component {
             <NewsItem title={ele.title ? ele.title.slice(0,30) : "Big Headline"} description={ele.description ?ele.description.slice(0,80) : "Read More....."} urlToImage = {ele.urlToImage} newsUrl = {ele.url}/>
            </div>
           })}
-          
+          <div className="container d-flex justify-content-between">
+              <button disabled={this.state.page <=1} type="button" class="btn btn-dark" onClick={this.handlePreviousClick}>&larr; Previous</button>
+              <button disabled = {this.state.page + 1 > Math.ceil(this.state.totalResults/20)} type="button" class="btn btn-dark" onClick={this.handleNextClick}>Next &rarr;</button>
+          </div>
         </div>
+        
       </div>
     );
   }

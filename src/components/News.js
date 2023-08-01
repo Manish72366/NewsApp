@@ -62,7 +62,7 @@ export class News extends Component {
     console.log("render");
     return (
       <div className="container my-3">
-        <h2  style={{color : 'darkgreen'}}>NewsTiger - Top Headlines</h2>
+        <h2   className= "text-center" style={{color : 'darkgreen'}}>NewsTiger - Top Headlines</h2>
         <div className="row">
           {this.state.articles.map( (ele)=>
           {

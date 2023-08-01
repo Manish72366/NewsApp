@@ -3,6 +3,18 @@ import React, { Component } from "react";
 import NewsItem from "./NewsItem";
 import Spinner from "./Spinner";
 export class News extends Component {
+  // setting default props
+  static defaultProps = {
+    country: 'in',
+    pageSize: 8,
+    category: 'general'
+  }
+  // setting data types of props so then wrong data type won't send
+  static propTypes = {
+     country : PropTypes.string,
+     pageSize: PropTypes.number,
+     category: PropTypes.string
+  }
   constructor(){
     super();// without this webpage will show you an error.
     console.log("Hello i am a constructor");
@@ -17,7 +29,7 @@ export class News extends Component {
   // componentDidMount helps us to fetch updated data.
   async componentDidMount(){
     console.log("Mai sabse baad mai run honga .mai use hora hu kunki mujshe hamesa current news milengi API se fetch krne ke baad");
-    let url = `https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=5f3863ab0e294d3a89c3097826ba64bb&page=${this.state.page}&pageSize=${this.props.pageSize}`;
+    let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=5f3863ab0e294d3a89c3097826ba64bb&page=${this.state.page}&pageSize=${this.props.pageSize}`;
     let data = await fetch(url); // wait while whole url will not fetch .
     console.log(data); // Response from fetched url
     // The .json() method of the Response interface takes a Response stream and reads it to completion. It returns a promise which resolves with the result of parsing the body text as JSON .
@@ -32,7 +44,7 @@ export class News extends Component {
   }
   handleNextClick = async () =>
   {
-      let url = `https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=5f3863ab0e294d3a89c3097826ba64bb&page=${this.state.page + 1}&pageSize=${this.props.pageSize}`;
+      let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=5f3863ab0e294d3a89c3097826ba64bb&page=${this.state.page + 1}&pageSize=${this.props.pageSize}`;
       this.setState({loading : true});
       let data = await fetch(url);
       let parsedData = await data.json();
@@ -48,7 +60,7 @@ export class News extends Component {
   handlePreviousClick = async () =>
   {
     // &page = number se wo number ka page dikhega and pageSize tells you that how many news in a single page will be shown
-    let url = `https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=5f3863ab0e294d3a89c3097826ba64bb&page=${this.state.page - 1}&pageSize=${this.props.pageSize}`;
+    let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=5f3863ab0e294d3a89c3097826ba64bb&page=${this.state.page - 1}&pageSize=${this.props.pageSize}`;
     this.setState({loading : true}); // loading true bcz niche hm url se data ko wait krenge.
     let data = await fetch(url);
     let parsedData = await data.json();
@@ -67,7 +79,7 @@ export class News extends Component {
     console.log("render");
     return (
       <div className="container my-3">
-        <h2  className= "text-center" style={{color : 'darkgreen'}}>NewsTiger - Top Headlines</h2>
+        <h2  className= "text-center" style={{color : 'rgb(0 ,129 ,0)' , margin : '20px 0px'}}>NewsTiger - Top Headlines</h2>
         {this.state.loading && <Spinner/>} {/* this means when the loading is true so then spinner show if loading false so don't look to the spinner*/}
         <div className="row">
           {/* jb loading == true hoga tb yrr please kuch so mt krna  */}

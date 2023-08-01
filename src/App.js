@@ -5,6 +5,7 @@ import React, { Component } from 'react'
 import Navbar from './components/Navbar';
 import News from './components/News';
 import NewsItem from './components/NewsItem';
+import spinner from "./components/Spinner";
 // previously we made textUtils on the basis of function based component and now this one have class based component as you can see below is the class based component.
 // render () renders all the html css whatever present there.
 export default class App extends Component {
@@ -13,7 +14,7 @@ export default class App extends Component {
     return (
       <>
        <Navbar/>
-       <News/>
+       <News pageSize={1}/>
        </>
     )
   }

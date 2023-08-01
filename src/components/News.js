@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import NewsItem from "./NewsItem";
+import Spinner from "./Spinner";
 export class News extends Component {
   constructor(){
     super();// without this webpage will show you an error.
@@ -16,7 +17,7 @@ export class News extends Component {
   // componentDidMount helps us to fetch updated data.
   async componentDidMount(){
     console.log("Mai sabse baad mai run honga .mai use hora hu kunki mujshe hamesa current news milengi API se fetch krne ke baad");
-    let url = "https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=5f3863ab0e294d3a89c3097826ba64bb";
+    let url = `https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=5f3863ab0e294d3a89c3097826ba64bb&page=${this.state.page}&pageSize=${this.props.pageSize}`;
     let data = await fetch(url); // wait while whole url will not fetch .
     console.log(data); // Response from fetched url
     // The .json() method of the Response interface takes a Response stream and reads it to completion. It returns a promise which resolves with the result of parsing the body text as JSON .
@@ -31,9 +32,11 @@ export class News extends Component {
   }
   handleNextClick = async () =>
   {
-      let url = `https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=5f3863ab0e294d3a89c3097826ba64bb&page=${this.state.page + 1}&pageSize=20`;
+      let url = `https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=5f3863ab0e294d3a89c3097826ba64bb&page=${this.state.page + 1}&pageSize=${this.props.pageSize}`;
+      this.setState({loading : true});
       let data = await fetch(url);
       let parsedData = await data.json();
+      this.setState({loading : false});
       console.log(parsedData);
       this.setState (
         {
@@ -45,9 +48,11 @@ export class News extends Component {
   handlePreviousClick = async () =>
   {
     // &page = number se wo number ka page dikhega and pageSize tells you that how many news in a single page will be shown
-    let url = `https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=5f3863ab0e294d3a89c3097826ba64bb&page=${this.state.page - 1}&pageSize=20`;
+    let url = `https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=5f3863ab0e294d3a89c3097826ba64bb&page=${this.state.page - 1}&pageSize=${this.props.pageSize}`;
+    this.setState({loading : true}); // loading true bcz niche hm url se data ko wait krenge.
     let data = await fetch(url);
     let parsedData = await data.json();
+    this.setState({loading : false}); // loading false as we got the data in json file and now it's time to show.
     console.log(parsedData);
     this.setState (
       {
@@ -62,9 +67,11 @@ export class News extends Component {
     console.log("render");
     return (
       <div className="container my-3">
-        <h2   className= "text-center" style={{color : 'darkgreen'}}>NewsTiger - Top Headlines</h2>
+        <h2  className= "text-center" style={{color : 'darkgreen'}}>NewsTiger - Top Headlines</h2>
+        {this.state.loading && <Spinner/>} {/* this means when the loading is true so then spinner show if loading false so don't look to the spinner*/}
         <div className="row">
-          {this.state.articles.map( (ele)=>
+          {/* jb loading == true hoga tb yrr please kuch so mt krna  */}
+          {this.state.loading === false && this.state.articles.map( (ele)=>
           {
             return <div className="col-md-4 my-3" key = {ele.url}> {/* col-md-4 means medium devices mai ye 4 column lega maximum a key should be return as unique id */}
             {/* ele.title != "null" is same as ele.title */}
@@ -72,8 +79,8 @@ export class News extends Component {
            </div>
           })}
           <div className="container d-flex justify-content-between">
-              <button disabled={this.state.page <=1} type="button" class="btn btn-dark" onClick={this.handlePreviousClick}>&larr; Previous</button>
-              <button disabled = {this.state.page + 1 > Math.ceil(this.state.totalResults/20)} type="button" class="btn btn-dark" onClick={this.handleNextClick}>Next &rarr;</button>
+              <button disabled={this.state.page <=1} type="button" className="btn btn-dark" onClick={this.handlePreviousClick}>&larr; Previous</button>
+              <button disabled = {this.state.page + 1 > Math.ceil(this.state.totalResults/this.props.pageSize)} type="button" className="btn btn-dark" onClick={this.handleNextClick}>Next &rarr;</button>
           </div>
         </div>
         

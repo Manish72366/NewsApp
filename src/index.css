@@ -1,0 +1,33 @@
+/*  index.css mai jo likhoge wo automatically sab elements mai lagu hoga jo match karenge */
+.nav-link
+{
+    color : rgb(0 ,129 ,0);
+}
+body{
+    background-color: #171313;
+}
+.nav-link:hover{
+  color: rgb(0, 219, 0);
+}
+/*  we want active component should be like below */
+.nav-link.active {
+  color: rgb(0, 219, 0) !important; /* Desired active link color */
+  /* Add any other styling for the active link here */
+}
+
+.card-body{
+  background-color: #171313 !important;
+  color: white !important;
+}
+.btn-clr{
+  background-color: rgb(0 ,129 ,0);
+  color: white;
+}
+.form-control{
+  background-color: rgba(var(--bs-dark-rgb));
+  color: white;
+}
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: white !important;
+  opacity: 1; /* Firefox */
+}

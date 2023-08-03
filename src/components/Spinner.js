@@ -7,7 +7,7 @@ export class spinner extends Component {
     return (
       <div>
         <div className="container text-center">
-           <img src={Spinner} alt="Abe sun na"/>
+           <img className= "my-3" src={Spinner} alt="Abe sun na"/>
         </div>
       </div>
     )

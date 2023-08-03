@@ -1,7 +1,7 @@
 /*  index.css mai jo likhoge wo automatically sab elements mai lagu hoga jo match karenge */
 .nav-link
 {
-    color : rgb(0 ,129 ,0);
+    color : rgba(25,135,84);
 }
 body{
     background-color: #171313;
@@ -20,7 +20,7 @@ body{
   color: white !important;
 }
 .btn-clr{
-  background-color: rgb(0 ,129 ,0);
+  background-color: rgba(var(--bs-success-rgb),var(--bs-bg-opacity))!important;
   color: white;
 }
 .form-control{
@@ -30,4 +30,8 @@ body{
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
   color: white !important;
   opacity: 1; /* Firefox */
+}
+
+.text-body-secondary{
+  color: rgba(25,135,84) !important;
 }

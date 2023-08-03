@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 import NewsItem from "./NewsItem";
 import Spinner from "./Spinner";
+import InfiniteScroll from "react-infinite-scroll-component";
 export class News extends Component {
   // setting default props
   static defaultProps = {
@@ -28,75 +29,93 @@ export class News extends Component {
   }
   // componentDidMount helps us to fetch updated data.
   async componentDidMount(){
+    this.props.setProgress(0)
     console.log("Mai sabse baad mai run honga .mai use hora hu kunki mujshe hamesa current news milengi API se fetch krne ke baad");
-    let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=5f3863ab0e294d3a89c3097826ba64bb&page=${this.state.page}&pageSize=${this.props.pageSize}`;
+    let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.apiKey}&page=${this.state.page}&pageSize=${this.props.pageSize}`;
+    this.setState({loading : true});
     let data = await fetch(url); // wait while whole url will not fetch .
+    this.props.setProgress(30)
     console.log(data); // Response from fetched url
     // The .json() method of the Response interface takes a Response stream and reads it to completion. It returns a promise which resolves with the result of parsing the body text as JSON .
     let parsedData = await data.json(); // Data parsing is converting data from one format to another. here converting to a json file.
+    this.props.setProgress(70)
     console.log(parsedData);
     this.setState (
       {
         articles : parsedData.articles, // parsedData is similiar to sampleOutput.json and there articles key we need becz it has array of objects
-        totalResults : parsedData.totalResults
+        totalResults : parsedData.totalResults,
+        loading:false
       }
     )
+    this.props.setProgress(100)
   }
-  handleNextClick = async () =>
+  updateClick = async () =>
   {
-      let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=5f3863ab0e294d3a89c3097826ba64bb&page=${this.state.page + 1}&pageSize=${this.props.pageSize}`;
+      let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.apiKey}&page=${this.state.page}&pageSize=${this.props.pageSize}`;
       this.setState({loading : true});
       let data = await fetch(url);
       let parsedData = await data.json();
-      this.setState({loading : false});
       console.log(parsedData);
       this.setState (
-        {
-          page : this.state.page + 1,
-          articles : parsedData.articles
-        }
-      )
+      {
+          articles : parsedData.articles,
+          totalResults : parsedData.totalResults,
+          loading : false
+      })
+  }
+  handleNextClick = async () =>
+  {
+     this.setState ({page : this.state.page + 1})
   }
   handlePreviousClick = async () =>
   {
-    // &page = number se wo number ka page dikhega and pageSize tells you that how many news in a single page will be shown
-    let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=5f3863ab0e294d3a89c3097826ba64bb&page=${this.state.page - 1}&pageSize=${this.props.pageSize}`;
-    this.setState({loading : true}); // loading true bcz niche hm url se data ko wait krenge.
-    let data = await fetch(url);
-    let parsedData = await data.json();
-    this.setState({loading : false}); // loading false as we got the data in json file and now it's time to show.
-    console.log(parsedData);
-    this.setState (
-      {
-        page : this.state.page - 1,
-        articles : parsedData.articles
-      }
-    )
+    this.setState ({page : this.state.page - 1})
   }
-    
+  fetchMoreData = async () =>
+  {
+     
+      this.setState ({page : this.state.page + 1}) // aage ke page se ab data fetch krna hai.
+      let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.apiKey}&page=${this.state.page + 1}&pageSize=${this.props.pageSize}`;
+      this.setState({loading : true});
+      let data = await fetch(url);
+      let parsedData = await data.json(); // parsedData ke andr arcticle hai key  ke roop mai ap sample output dekh skte ho
+      console.log(parsedData);
+      this.setState (
+      {
+          articles : this.state.articles.concat(parsedData.articles),
+          totalResults : parsedData.totalResults,
+          loading : false
+      })
+  }
     // {this.state.articles.map((ele) => {console.log(ele)})}  this is the way in which you can get all the object from an array so each element is an object.
   render() {
     console.log("render");
+    // is line ke baad didMount wala function run karo along with below.
     return (
-      <div className="container my-3">
-        <h2  className= "text-center" style={{color : 'rgb(0 ,129 ,0)' , margin : '20px 0px'}}>NewsTiger - Top Headlines</h2>
-        {this.state.loading && <Spinner/>} {/* this means when the loading is true so then spinner show if loading false so don't look to the spinner*/}
-        <div className="row">
-          {/* jb loading == true hoga tb yrr please kuch so mt krna  */}
-          {this.state.loading === false && this.state.articles.map( (ele)=>
-          {
-            return <div className="col-md-4 my-3" key = {ele.url}> {/* col-md-4 means medium devices mai ye 4 column lega maximum a key should be return as unique id */}
-            {/* ele.title != "null" is same as ele.title */}
-            <NewsItem title={ele.title ? ele.title.slice(0,30) : "Big Headline"} description={ele.description ?ele.description.slice(0,80) : "Read More....."} urlToImage = {ele.urlToImage} newsUrl = {ele.url}/>
-           </div>
+      <>
+        <h2  className= "text-center " style={{color : 'rgba(var(--bs-success-rgb)' , margin : '20px 0px' }}>NewsTiger - Top Headlines</h2>
+        {this.state.loading && <Spinner/>} {/* loading true so spinner show*/}
+        <InfiniteScroll
+          dataLength={this.state.articles.length}
+          next={this.fetchMoreData} // more data
+          hasMore={this.state.articles.length !== this.state.totalResults } // kb tk krna hai .
+          loader={this.state.loading && <Spinner/>} style= {{overflow :'hidden'} }> {/* overflow hidden so then scroll bar na dikhe niche*/}
+          <div className="container">
+          <div className="row">
+          {this.state.articles.map((ele , index)=> // index used as indentifier simple
+          { 
+            return <div className="col-md-4 my-3" key = {index}> 
+            <NewsItem title={ele.title ? ele.title.slice(0,30) : "Big Headline"} description={ele.description ?ele.description.slice(0,80) : "Read More....."} urlToImage = {ele.urlToImage} newsUrl = {ele.url} author = {ele.author ? ele.author : "Unknown"} date = {ele.publishedAt} source = {ele.source.name}/></div>
           })}
-          <div className="container d-flex justify-content-between">
+          </div>
+          </div></InfiniteScroll>
+
+          {/* this is for next and previous button */}
+          {/* <div className="container d-flex justify-content-between">
               <button disabled={this.state.page <=1} type="button" className="btn btn-dark" onClick={this.handlePreviousClick}>&larr; Previous</button>
               <button disabled = {this.state.page + 1 > Math.ceil(this.state.totalResults/this.props.pageSize)} type="button" className="btn btn-dark" onClick={this.handleNextClick}>Next &rarr;</button>
-          </div>
-        </div>
-        
-      </div>
+          </div> */}
+      </>
     );
   }
 }

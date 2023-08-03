@@ -1,12 +1,8 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 
-export class NewsItem extends Component {
- 
-  // date we have a string we converted first into object by new Date(date) and then convert in GMTstring for our convienience
-
-  render() {
-    let {title , description ,urlToImage , newsUrl , author , date,source} = this.props;
+const NewsItem = (props) => {
+    let {title , description ,urlToImage , newsUrl , author , date,source} = props;
     return (
       <div className='container my-3'>
         <div className="card bg-success"> 
@@ -21,7 +17,6 @@ export class NewsItem extends Component {
         </div>
       </div>
     )
-  }
 }
 
 export default NewsItem

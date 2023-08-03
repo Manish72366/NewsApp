@@ -1,9 +1,6 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import React from 'react'
 import Spinner from './Spinner-5.gif'
-export class spinner extends Component {
-
-  render() {
+const spinner = () => {
     return (
       <div>
         <div className="container text-center">
@@ -11,7 +8,6 @@ export class spinner extends Component {
         </div>
       </div>
     )
-  }
 }
 
 export default spinner

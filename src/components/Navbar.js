@@ -1,26 +1,21 @@
-// just enter rcep
-import { useState, useEffect } from "react";
-import { hover } from '@testing-library/user-event/dist/hover'
+// just enter rcep for class based component.
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React from 'react' // {component} used in class based
 import {
   Link,
 } from "react-router-dom";
 // href = "#" ko use mt kro href = "/" use karo
 // to="" will link to the same page as the one you are currently on, effectively refreshing the page. to="#" will not refresh the page, but using the # will make the screen move to the top of the page (it is the browser effectively looking for an anchor with no name, )
-export class Navbar extends Component {
-  
+const  Navbar = () =>  {
   // this is not defined in normal function only defined in arrow functions.
-  changeClr = (event) => {
+   const changeClr = (event) => {
     // here belo getElementsByClassName("nav-link") gives you an array like object so we have to traverse each.
     const links = document.getElementsByClassName("nav-link"); // getting all the elements having class nav-link
     for (let i = 0; i < links.length; i++) {
       links[i].classList.remove("active"); // removing active bootstrap class from all.
     }
-    event.target.classList.add("active"); // give active class to the event wale ko.
+      event.target.classList.add("active"); // give active class to the event wale ko.
   }
-  
-  render() {
     return (
         <>
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark ">
@@ -32,22 +27,22 @@ export class Navbar extends Component {
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <li className="nav-item">
-                <Link className="nav-link active" aria-current="page" to="/home"  onClick={this.changeClr}>Home</Link>
+                <Link className="nav-link active" aria-current="page" to="/home"  onClick={changeClr}>Home</Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/business"   onClick={this.changeClr} >business</Link></li>
+                <Link className="nav-link" to="/business"   onClick={changeClr} >business</Link></li>
               <li className="nav-item">
-                <Link className="nav-link" to="/entertainment"   onClick={this.changeClr}>entertainment</Link></li>
+                <Link className="nav-link" to="/entertainment"   onClick={changeClr}>entertainment</Link></li>
               <li className="nav-item">
-                <Link className="nav-link" to="/general"  onClick={this.changeClr} >general</Link></li>
+                <Link className="nav-link" to="/general"  onClick={changeClr} >general</Link></li>
               <li className="nav-item">
-                <Link className="nav-link" to="/health"   onClick={this.changeClr} >health</Link></li>
+                <Link className="nav-link" to="/health"   onClick={changeClr} >health</Link></li>
               <li className="nav-item">
-                <Link className="nav-link" to="/science"  onClick={this.changeClr}>science</Link></li>
+                <Link className="nav-link" to="/science"  onClick={changeClr}>science</Link></li>
               <li className="nav-item">
-                <Link className="nav-link" to="/sports"  onClick={this.changeClr} >sports</Link></li>
+                <Link className="nav-link" to="/sports"  onClick={changeClr} >sports</Link></li>
               <li className="nav-item">
-                <Link className="nav-link " to="/technology"  onClick={this.changeClr} >technology</Link></li>
+                <Link className="nav-link " to="/technology"  onClick={changeClr} >technology</Link></li>
             </ul>
             <form className="d-flex" role="search">
               <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
@@ -58,7 +53,6 @@ export class Navbar extends Component {
       </nav>
       </>
     )
-  }
 }
 
 export default Navbar

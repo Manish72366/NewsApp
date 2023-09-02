@@ -10,11 +10,11 @@ const News = (props) => {
   const [totalResults , setTotalResults] = useState(0);
   const updateClick = async () =>
   {
-    props.setProgress(0)
+    props.setProgress(20)
     let url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`;
     setLoading(true);
     let data = await fetch(url); 
-    props.setProgress(30)
+    props.setProgress(50)
     let parsedData = await data.json(); 
     props.setProgress(70)
     setArticles(parsedData.articles)
@@ -22,12 +22,18 @@ const News = (props) => {
     setTotalResults(parsedData.totalResults);
     props.setProgress(100)
   }
+  const captilizeAtFirst = (category) =>
+  {
+     return category.charAt(0).toUpperCase() + category.slice(1);
+  }
   // componentDidMount used in class based component here we replaced it by useEffect
   // const componentDidMount = async () =>{
-  //   updateClick();
+    //   updateClick();
   // }
   useEffect(() => {
+     document.title = `${captilizeAtFirst(props.category)} - NewsTiger`;
      updateClick();
+     // eslint-disable-next-line
   }, []) // this [] means kiske khne pe ye run hoga but yha kio condition nahi hai yha hm chathe hai ki ye run ho jb return ho jaye
   
   const handleNextClick = async () =>
@@ -40,11 +46,12 @@ const News = (props) => {
     setPage( page - 1)
     updateClick();
   }
+  // https://saurav.tech/NewsAPI/top-headlines/category/health/in.json
+  // https://saurav.tech/NewsAPI/top-headlines/category/${props.category}/${props.country}&page=${page + 1}&pageSize=${props.pageSize}.json
   const fetchMoreData = async () =>
   {
-    
-    setPage( page + 1) 
     let url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page + 1}&pageSize=${props.pageSize}`;
+    setPage( page + 1) // intially i wrote it above to url but setPage(page + 1) update little slow as it is aschronously so url will made then setPage update so therefore upr hmne page + 1 kiya ar ab isko update bhi kr diya
     setLoading(true);
     let data = await fetch(url);
     let parsedData = await data.json();
@@ -54,7 +61,7 @@ const News = (props) => {
   }
   return (
       <>
-        <h2  className= "text-center " style={{color : 'rgba(var(--bs-success-rgb)' , margin : '20px 0px' }}>NewsTiger - Top Headlines</h2>
+        <h2  className= "text-center my-10" style={{color : 'rgba(var(--bs-success-rgb)' , marginTop : '90px' }}>NewsTiger - Top Headlines On {props.category}</h2>
         {loading && <Spinner/>} {/* loading true so spinner show*/}
         <InfiniteScroll
           dataLength={articles.length}

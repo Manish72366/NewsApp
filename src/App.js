@@ -11,12 +11,8 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-function App() {
-  const [progress , setProgress1] = useState(0);
-  const setProgress = (progress) =>
-  {
-    setProgress1(progress)
-  }
+const  App = () => {
+  const [progress , setProgress] = useState(0);
   const pageSize = 20;
   const apiKey = process.env.REACT_APP_NEWS_API;
     return (
